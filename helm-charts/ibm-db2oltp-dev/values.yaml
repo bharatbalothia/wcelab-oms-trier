@@ -20,7 +20,7 @@ image:
   tag: latest
   pullPolicy: IfNotPresent 
 service:
-  name: ibm-db2oltp-dev
+  name: ibm-demo-db2oltp-dev
   type: ClusterIP
   port: 50000
   tsport: 55000
@@ -34,7 +34,7 @@ options:
 ## global persistence settings
 persistence:
   enabled: true
-  useDynamicProvisioning: true
+  useDynamicProvisioning: false 
 
 ## hadr option
 hadr:
@@ -52,7 +52,7 @@ dataVolume:
   ## Specify the name of the StorageClass
   ## empty string means don't use a StorageClass
   storageClassName: "ibmc-block-bronze"
-  size: 40Gi
+  size: 400Gi
 
 etcdVolume:
   name: "etcd-stor"
@@ -80,9 +80,9 @@ hadrVolume:
 ##
 resources:
   requests:
-    memory: 4Gi
-    cpu: 2000m
-  limits:
     memory: 8Gi
-    cpu: 2000m
+    cpu: 4000m
+  limits:
+    memory: 16Gi
+    cpu: 4000m
 

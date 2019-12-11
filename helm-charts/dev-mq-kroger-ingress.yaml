@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+ kind: Ingress
+ metadata:
+   name: mq-dev-kroger-ingress
+   annotations:
+       ingress.bluemix.net/ssl-services: ssl-service=oms-mq-ibm-mq
+ spec:
+   tls:
+   - hosts:
+     - devmq.oms-on-ocp-kroger.us-east.containers.appdomain.cloud
+     secretName: oms-on-ocp-kroger
+   rules:
+   - host: devmq.oms-on-ocp-kroger.us-east.containers.appdomain.cloud
+     http:
+       paths:
+       - path: /
+         backend:
+           serviceName: oms-mq-ibm-mq
+           servicePort: 9443

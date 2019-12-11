@@ -1,0 +1,72 @@
+charts:
+ - archive: file:ibm-oms-ent-prod-2.0.0.tgz
+   repository-keys:
+      - global.image.repository
+
+images:
+- image: om-app:ent-10.0.0.2
+  references:
+  - repository : om-app:ent-10.0.0.2-amd64
+    pull-repository: hyc-icpcontent-docker-local.artifactory.swg-devops.com/oms/om-app:ent-10.0.0.2-amd64
+    platform:
+      os: linux
+      architecture: amd64
+    pull-authorization:
+      username:
+        env: ARTIFACTORY_USERNAME
+      password:
+        env: ARTIFACTORY_PASSWORD
+  - repository : om-app:ent-10.0.0.2-ppc64le
+    pull-repository: hyc-icpcontent-docker-local.artifactory.swg-devops.com/oms/om-app:ent-10.0.0.2-ppc64le
+    platform:
+      os: linux
+      architecture: ppc64le
+    pull-authorization:
+      username:
+        env: ARTIFACTORY_USERNAME
+      password:
+        env: ARTIFACTORY_PASSWORD
+- image: om-agent:ent-10.0.0.2
+  references:
+  - repository : om-agent:ent-10.0.0.2-amd64
+    pull-repository: hyc-icpcontent-docker-local.artifactory.swg-devops.com/oms/om-agent:ent-10.0.0.2-amd64
+    platform:
+      os: linux
+      architecture: amd64
+    pull-authorization:
+      username:
+        env: ARTIFACTORY_USERNAME
+      password:
+        env: ARTIFACTORY_PASSWORD
+  - repository : om-agent:ent-10.0.0.2-ppc64le
+    pull-repository: hyc-icpcontent-docker-local.artifactory.swg-devops.com/oms/om-agent:ent-10.0.0.2-ppc64le
+    platform:
+      os: linux
+      architecture: ppc64le
+    pull-authorization:
+      username:
+        env: ARTIFACTORY_USERNAME
+      password:
+        env: ARTIFACTORY_PASSWORD
+- image: om-base:ent-10.0.0.2
+  references:
+  - repository : om-base:ent-10.0.0.2-amd64
+    pull-repository: hyc-icpcontent-docker-local.artifactory.swg-devops.com/oms/om-base:ent-10.0.0.2-amd64
+    platform:
+      os: linux
+      architecture: amd64
+    pull-authorization:
+      username:
+        env: ARTIFACTORY_USERNAME
+      password:
+        env: ARTIFACTORY_PASSWORD
+  - repository : om-base:ent-10.0.0.2-ppc64le
+    pull-repository: hyc-icpcontent-docker-local.artifactory.swg-devops.com/oms/om-base:ent-10.0.0.2-ppc64le
+    platform:
+      os: linux
+      architecture: ppc64le
+    pull-authorization:
+      username:
+        env: ARTIFACTORY_USERNAME
+      password:
+        env: ARTIFACTORY_PASSWORD

@@ -21,4 +21,4 @@ fsGroup:
 supplementalGroups:
   type: RunAsAny
 users:
-- system:serviceaccount:%NAMESPACE%:default
+- system:serviceaccount:lathom-tst02:default

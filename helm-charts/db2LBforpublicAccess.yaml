@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+ name: ibmdb2-tcp
+spec:
+ ports:
+ - name: main
+   port: %DB_PORT%
+ loadBalancerIP:
+ type: LoadBalancer
+ selector:
+   app: %DB2_SVC_HOSTNAME%
+   component:  

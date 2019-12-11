@@ -1,0 +1,114 @@
+# Licensed Materials - Property of IBM
+# IBM Order Management Software (5725-D10)
+# (C) Copyright IBM Corp. 2018, 2019 All Rights Reserved.
+# US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+
+
+# Default values for the chart
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+appserver:
+  replicaCount: 1
+  image: 
+#    repository: wce-oms-onprem-docker-local.artifactory.swg-devops.com/om
+    name: om-app
+    tag: ent-10.0.0.2
+    pullPolicy: Always
+  config:
+    vendor: websphere
+    vendorFile: servers.properties
+    jvm:
+      xms: 1024m
+      xmx: 2048m
+    database:
+      maxPoolSize: 50
+      minPoolSize: 10
+  service:
+    type: NodePort
+    http:
+      port: 9080
+      nodePort: 32268
+    https:
+      port: 9443
+      nodePort: 32228
+  resources:
+    requests:
+      memory: 2560Mi
+      cpu: 1
+    limits:
+      memory: 3840Mi
+      cpu: 2
+  ingress:
+    enabled: false
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+
+omserver:
+  image: 
+#    repository: wce-oms-onprem-docker-local.artifactory.swg-devops.com/om
+    name: om-agent
+    tag: ent-10.0.0.2
+    pullPolicy: Always
+  deployHealthMonitor: false
+  common:
+    jvmArgs: "-Xms512m\ -Xmx1024m"
+    replicaCount: 1
+    resources:
+      requests:
+        memory: 1024Mi
+        cpu: 0.5
+      limits:
+        memory: 2048Mi
+        cpu: 1
+#   servers:
+#   - group: "Default Server"
+#     name: 
+#     - schserver
+#     jvmArgs: "-Xms512m\ -Xmx1024m"
+#     replicaCount: 1
+#     resources:
+#       requests:
+#         memory: 1024Mi
+#         cpu: 0.5
+#     nodeSelector: {}
+#     tolerations: []
+#     affinity: {}
+
+datasetup:
+  loadFactoryData: DoNotInstall
+  mode: create
+  image: 
+#    repository: wce-oms-onprem-docker-local.artifactory.swg-devops.com/om
+    name: om-agent
+    tag: ent-10.0.0.2
+    pullPolicy: Always
+
+
+global:
+  image: 
+    repository: wce-oms-onprem-docker-local.artifactory.swg-devops.com/om
+  appSecret: _CV_RELEASE_-secret-oms
+  database:
+    serverName: 9.30.183.172
+    port: 50000
+    dbname: omsdb
+    user: db2inst1
+    dbvendor: db2
+  customerOverrides:
+  persistence:
+    claims:
+      name: oms-common
+      accessMode: ReadWriteMany
+      capacity: 10
+      capacityUnit: Gi
+    securityContext:
+      fsGroup: 9999
+      supplementalGroup: 9999
+  mq:
+    bindingConfigName: _CV_RELEASE_-mq-bindings-oms
+    bindingMountPath: /opt/ssfs/.bindings
+  arch:
+    amd64: "3 - Most preferred"

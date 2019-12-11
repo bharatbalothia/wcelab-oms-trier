@@ -1,0 +1,35 @@
+# Licensed Materials - Property of IBM
+# IBM Order Management Software (5725-D10)
+# (C) Copyright IBM Corp. 2018, 2019 All Rights Reserved.
+# US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+overrides:
+# - message: .*parameter is defined but not used.*
+#   reason: "We use these parameters in non-yaml resource files that are eventually mounted within the containers."
+# - message: \[WARNING\] Multiple yaml documents defined in single template file.*
+#   reason: "We are creating variable number of agent servers based on provided criteria in a loop."
+  - message: .*invalid container image name.*
+    reason: "Certified Cloud Pack images are already following this naming convention."
+
+  - message: .*production chart running on ICP or ICPRHOCP should contain a monitoring dashboard.*
+    reason: "Dashboard not developed as part of IBM Certified Container (/L2) certification"
+
+  - message: .*image is not used.*
+    reason: "This image is part of the cloud pack as it is required for building customized app/agent images for the OMS product."
+
+  - message: .*found potentially secret parameter that may not be allowed.*
+    reason: "The values refer to names of kubernetes secret resources which can be used by the application."
+
+  - message: .*PodDisruptionBudget.*
+    reason: "PodDisruptionBudget not added as part of IBM Certified Container (/L2) certification."
+
+  - message: .*parameter is used but not defined.*
+    reason: ".Values.arch is present under global."
+
+  - message: .*found pod with default serviceAccountName.*
+    reason: "default serviceAccountName is used for testing purpose."
+
+  - message: .*found helm hook.*
+    reason: "Helm hooks are used for handling the resources in pre-install, pre-upgrade scenarios."
+
+  - message: .*expected Ingress rule to have host attribute.*
+    reason: ".Values.appserver.ingress.host is a mandatory parameter which will be used as spec.rules[0].host."

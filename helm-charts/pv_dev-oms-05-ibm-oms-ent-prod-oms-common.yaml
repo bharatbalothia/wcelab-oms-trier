@@ -1,0 +1,19 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+ name: dev-oms-05-ibm-oms-ent-prod-oms-common
+ uid: be27bdb9-db0e-11e9-99db-e2ee7d134c44
+ creationTimestamp: '2019-09-19T18:53:17Z'
+ namespace: dev-oms
+ finalizers:
+   - kubernetes.io/pvc-protection
+ labels:
+   region: eu-de
+   zone: fra02
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 20Gi
+ storageClassName: ibmc-file-bronze

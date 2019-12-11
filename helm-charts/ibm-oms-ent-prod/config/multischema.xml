@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<colonyconfig>
+<colonies>
+<colony name="DEFAULT" pkprefix="20" version="10.0">
+<schema poolid="DEFAULT_MASTER_10" tabletype="MASTER"/>
+<schema poolid="DEFAULT_STATISTICS_10" tabletype="STATISTICS"/>
+<schema poolid="DEFAULT_CONFIGURATION_10" tabletype="CONFIGURATION"/>
+<schema poolid="DEFAULT_TRANS_10" tabletype="TRANSACTION"/>
+</colony>
+</colonies>
+<pools>
+<pool id="DEFAULT_MASTER_10">
+<jdbc>
+<param name="url" value="jdbc:db2://%DB_SVC_HOSTNAME%:%DB_PORT%/IBMOMS"/>
+<param name="user" value="%DB_UNAME%"/>
+<param name="password" value="%DB_PWORD%"/>
+<param name="driver" value="com.ibm.db2.jcc.DB2Driver"/>
+<param name="schema" value="%MASTER_SCHEMA_NAME%"/>
+</jdbc>
+</pool>
+<pool id="DEFAULT_TRANS_10">
+<jdbc>
+<param name="url" value="jdbc:db2://%DB_SVC_HOSTNAME%:%DB_PORT%/IBMOMS"/>
+<param name="user" value="%DB_UNAME%"/>
+<param name="password" value="%DB_PWORD%"/>
+<param name="driver" value="com.ibm.db2.jcc.DB2Driver"/>
+<param name="schema" value="%TRANS_SCHEMA_NAME%"/>
+</jdbc>
+</pool>
+<pool id="DEFAULT_STATISTICS_10">
+<jdbc>
+<param name="url" value="jdbc:db2://%DB_SVC_HOSTNAME%:%DB_PORT%/IBMOMS"/>
+<param name="user" value="%DB_UNAME%"/>
+<param name="password" value="%DB_PWORD%"/>
+<param name="driver" value="com.ibm.db2.jcc.DB2Driver"/>
+<param name="schema" value="%STATS_SCHEMA_NAME%"/>
+</jdbc>
+</pool>
+<pool id="DEFAULT_CONFIGURATION_10">
+<jdbc>
+<param name="url" value="jdbc:db2://%DB_SVC_HOSTNAME%:%DB_PORT%/IBMOMS"/>
+<param name="user" value="%DB_UNAME%"/>
+<param name="password" value="%DB_PWORD%"/>
+<param name="driver" value="com.ibm.db2.jcc.DB2Driver"/>
+<param name="schema" value="%CONFIG_SCHEMA_NAME%"/>
+</jdbc>
+</pool>
+</pools>
+</colonyconfig>
