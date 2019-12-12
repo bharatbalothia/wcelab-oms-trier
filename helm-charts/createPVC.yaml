@@ -1,0 +1,19 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+ name: oms-common
+ uid: 
+ creationTimestamp:
+ namespace: %RHOS_PROJ_NAME%
+ finalizers:
+   - kubernetes.io/pvc-protection
+ labels:
+   region: eu-de
+   zone: fra02
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 20Gi
+ storageClassName: ibmc-file-bronze

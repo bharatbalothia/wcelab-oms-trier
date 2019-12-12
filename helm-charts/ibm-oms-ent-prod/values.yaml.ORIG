@@ -19,7 +19,7 @@ global:
     dbvendor: DB2
     datasourceName: jdbc/OMDS
     systemPool: true
-    schema: "%OMS_SCHEMA_NAME%"
+    schema: "META_dev-oms"
   serviceAccountName: oms-dev-sa
   customerOverrides: 
   - yfs.yfs.searchIndex.rootDirectory=/shared/SearchIndex
@@ -112,10 +112,10 @@ appserver:
     type: NodePort
     http:
       port: 9080
-      nodePort: 30183
+      nodePort: 30083
     https:
       port: 9443
-      nodePort: 30546
+      nodePort: 30446
   resources:
     requests:
       memory: 2560Mi

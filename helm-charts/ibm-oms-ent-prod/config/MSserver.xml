@@ -55,28 +55,28 @@
                 <connectionManager maxPoolSize="{{ .Values.appserver.config.database.maxPoolSize }}" minPoolSize="{{ .Values.appserver.config.database.minPoolSize }}" />
                 <properties.db2.jcc databaseName="{{ .Values.global.database.dbname }}" serverName="{{ .Values.global.database.serverName }}"
                         portNumber="{{ .Values.global.database.port }}" user="{{ .Values.global.database.user }}" password="${env.dbpassword}"
-                        currentSchema="TEST_MASTER_OMS_TEST" />
+                        currentSchema="%MASTER_SCHEMA_NAME%" />
         </dataSource>
         <dataSource id="ConfigDataSource" jndiName="DEFAULT_CONFIGURATION_100">
                 <jdbcDriver libraryRef="dblib" />
                 <connectionManager maxPoolSize="{{ .Values.appserver.config.database.maxPoolSize }}" minPoolSize="{{ .Values.appserver.config.database.minPoolSize }}" />
                 <properties.db2.jcc databaseName="{{ .Values.global.database.dbname }}" serverName="{{ .Values.global.database.serverName }}"
                         portNumber="{{ .Values.global.database.port }}" user="{{ .Values.global.database.user }}" password="${env.dbpassword}"
-                        currentSchema="TEST_CONFIG_OMS_TEST" />
+                        currentSchema="%CONFIG_SCHEMA_NAME%" />
         </dataSource>
         <dataSource id="TransDataSource" jndiName="DEFAULT_TRANS_10">
                 <jdbcDriver libraryRef="dblib" />
                 <connectionManager maxPoolSize="{{ .Values.appserver.config.database.maxPoolSize }}" minPoolSize="{{ .Values.appserver.config.database.minPoolSize }}" />
                 <properties.db2.jcc databaseName="{{ .Values.global.database.dbname }}" serverName="{{ .Values.global.database.serverName }}"
                         portNumber="{{ .Values.global.database.port }}" user="{{ .Values.global.database.user }}" password="${env.dbpassword}"
-                        currentSchema="TEST_TRANS_OMS_TEST" />
+                        currentSchema="%TRANS_SCHEMA_NAME%" />
         </dataSource>
         <dataSource id="StatsDataSource" jndiName="DEFAULT_STATISTICS_100">
                 <jdbcDriver libraryRef="dblib" />
                 <connectionManager maxPoolSize="{{ .Values.appserver.config.database.maxPoolSize }}" minPoolSize="{{ .Values.appserver.config.database.minPoolSize }}" />
                 <properties.db2.jcc databaseName="{{ .Values.global.database.dbname }}" serverName="{{ .Values.global.database.serverName }}"
                         portNumber="{{ .Values.global.database.port }}" user="{{ .Values.global.database.user }}" password="${env.dbpassword}"
-                        currentSchema="TEST_STATS_OMS_TEST" />
+                        currentSchema="%STATS_SCHEMA_NAME%" />
         </dataSource>
 
         <library id="dblib">

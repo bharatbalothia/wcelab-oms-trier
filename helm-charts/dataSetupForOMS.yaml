@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: datasetup
+  labels:
+    app: datasetup
+spec:
+  containers:
+    - name: oms
+      image: docker-registry.default.svc:5000/%RHOS_PROJ_NAME%/oms-base-is:latest
+      securityContext:
+         privileged: false
+         runAsUser: 0
+         readOnlyRootFilesystem: false
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+      command: ["/bin/sh", "-c"]
+      args:
+      - 'tail -f /dev/null'
+      volumeMounts:
+      - name: oms-common
+        mountPath: "/shared"
+  volumes:
+    - name: oms-common
+      persistentVolumeClaim:
+         claimName: oms-common

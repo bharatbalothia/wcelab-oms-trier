@@ -110,7 +110,7 @@ function setApplyOMSSecret()
         sed -i -e "s/%LIBERTY_ADMIN_PWORD%/${LIBERTY_ADMIN_PWORD}/g" ./helm-charts/omsSecret.yaml
 	sed -i -e "s/%LIBERTY_CONSOLE_PWORD%/${LIBERTY_CONSOLE_PWORD}/g" ./helm-charts/omsSecret.yaml
 	sed -i -e "s/%DB_PWORD%/${DB_PWORD}/g" ./helm-charts/omsSecret.yaml
-#	applyYaml "./helm-charts/omsSecret.yaml"
+	applyYaml "./helm-charts/omsSecret.yaml"
 	mv ./helm-charts/omsSecret.yaml.bak ./helm-charts/omsSecret.yaml
 }
 
@@ -119,13 +119,14 @@ function setApplyDB2LB ()
 	cp ./helm-charts/db2LBforpublicAccess.yaml ./helm-charts/db2LBforpublicAccess.yaml.bak
         sed -i -e "s/%DB_PORT%/${DB_PORT}/g" ./helm-charts/db2LBforpublicAccess.yaml
         sed -i -e "s/%DB2_SVC_HOSTNAME%/${DB2_SVC_HOSTNAME}/g" ./helm-charts/db2LBforpublicAccess.yaml
-#	applyYaml "./helm-charts/db2LBforpublicAccess.yaml"
+	applyYaml "./helm-charts/db2LBforpublicAccess.yaml"
 	mv ./helm-charts/db2LBforpublicAccess.yaml.bak ./helm-charts/db2LBforpublicAccess.yaml
 
 }
 
-function editMultischemaxml ()
+function editFilesForMultiSchema ()
 {
+	# Updates for: muiltischema.xml
 	cp ./helm-charts/ibm-oms-ent-prod/config/multischema.xml ./helm-charts/ibm-oms-ent-prod/config/multischema.xml.bak
 	sed -i -e "s/%DB_SVC_HOSTNAME%/${DB_SVC_HOSTNAME}/g" ./helm-charts/ibm-oms-ent-prod/config/multischema.xml
 	sed -i -e "s/%DB_PORT%/${DB_PORT}/g" ./helm-charts/ibm-oms-ent-prod/config/multischema.xml
@@ -135,6 +136,20 @@ function editMultischemaxml ()
 	sed -i -e "s/%TRANS_SCHEMA_NAME%/${TRANS_SCHEMA_NAME}/g" ./helm-charts/ibm-oms-ent-prod/config/multischema.xml
 	sed -i -e "s/%STATS_SCHEMA_NAME%/${STATS_SCHEMA_NAME}/g" ./helm-charts/ibm-oms-ent-prod/config/multischema.xml
 	sed -i -e "s/%CONFIG_SCHEMA_NAME%/${CONFIG_SCHEMA_NAME}/g" ./helm-charts/ibm-oms-ent-prod/config/multischema.xml
+
+
+	# Updates for: server.xml
+	cp ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml.bak
+	sed -i -e "s/%MASTER_SCHEMA_NAME%/${MASTER_SCHEMA_NAME}/g" ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml
+        sed -i -e "s/%TRANS_SCHEMA_NAME%/${TRANS_SCHEMA_NAME}/g" ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml
+        sed -i -e "s/%STATS_SCHEMA_NAME%/${STATS_SCHEMA_NAME}/g" ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml
+        sed -i -e "s/%CONFIG_SCHEMA_NAME%/${CONFIG_SCHEMA_NAME}/g" ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml
+	cp ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml ./helm-charts/ibm-oms-ent-prod/config/server.xml
+ 
+	# Updates for: server.xml
+        cp ./helm-charts/ibm-oms-ent-prod/config/system_overrides.properties ./helm-charts/ibm-oms-ent-prod/config/system_overrides.properties.bak
+	echo "si_config.multischema.enabled=true" >> ./helm-charts/ibm-oms-ent-prod/config/system_overrides.properties
+
 }
 
 function createDBSchema ()
@@ -184,7 +199,8 @@ function createDBSchema ()
 	read -n 1 -s -r -p "Press any key to continue or CTRL-C to exit now"
 	
 	
-	printf "\nConnecting to database ibmoms as user $DB_UNAME...\n"
+	printf "\nConnecting to database ibmoms on $DB_PROJECT as user $DB_UNAME...\n"
+	oc project $DB_PROJECT
 	printf "\n\toc exec $DB_PODNAME -i -t /opt/ibm/db2/V11.5/bin/db2 CONNECT to ibmoms user $DB_UNAME using $DB_PWORD\n"
 	oc exec $DB_PODNAME -i -t /opt/ibm/db2/V11.5/bin/db2 CONNECT to ibmoms user $DB_UNAME using $DB_PWORD
 	printf "\nCreating schema $OMS_SCHEMA_NAME..."
@@ -201,32 +217,81 @@ function createDBSchema ()
 		printf "\nCreating schema $CONFIG_SCHEMA_NAME..."
 		oc exec $DB_PODNAME -i -t /opt/ibm/db2/V11.5/bin/db2 create schema $CONFIG_SCHEMA_NAME
 	
-	editMultischemaxml	
-	
-	
+		editFilesForMultiSchema	
 	fi	
+
+	oc project $NAMESPACE
+
 }
 
+function createOMSDataSetup()
+{
+	cp ./helm-charts/dataSetupForOMS.yaml ./helm-charts/dataSetupForOMS.yaml.bak
+	sed -i -e "s/%RHOS_PROJ_NAME%/$RHOS_PROJ_NAME/g" ./helm-charts/dataSetupForOMS.yaml
+	applyYaml "./helm-charts/dataSetupForOMS.yaml"
+	mv ./helm-charts/dataSetupForOMS.yaml.bak ./helm-charts/dataSetupForOMS.yaml
+
+}
+
+
+function instantiateOMSImage()
+{
+#	cp ./helm-charts/ibm-oms-ent-prod/values.yaml ./helm-charts/ibm-oms-ent-prod/values.yaml.bak
+	sed -i -e "s/%RHOS_PROJ_NAME%/$RHOS_PROJ_NAME/g" ./helm-charts/ibm-oms-ent-prod/values.yaml
+	sed -i -e "s/%DB2_SVC_HOSTNAME%/$DB2_SVC_HOSTNAME/g" ./helm-charts/ibm-oms-ent-prod/values.yaml
+	sed -i -e "s/%DB_UNAME%/$DB_UNAME/g" ./helm-charts/ibm-oms-ent-prod/values.yaml
+	sed -i -e "s/%DB_PORT%/$DB_PORT/g" ./helm-charts/ibm-oms-ent-prod/values.yaml
+	sed -i -e "s/%OMS_SCHEMA_NAME%/$OMS_SCHEMA_NAME/g" ./helm-charts/ibm-oms-ent-prod/values.yaml
+	helm install --name $RHOS_PROJ_NAME -f ./helm-charts/ibm-oms-ent-prod/values.yaml ./helm-charts/ibm-oms-ent-prod --timeout 3600 --namespace $RHOS_PROJ_NAME --tiller-namespace tiller
+	mv ./helm-charts/ibm-oms-ent-prod/values.yaml.bak ./helm-charts/ibm-oms-ent-prod/values.yaml
+}
+
+function resetFiles()
+{
+	mv ./helm-charts/ibm-oms-ent-prod/values.yaml.bak ./helm-charts/ibm-oms-ent-prod/values.yaml
+	mv ./helm-charts/dataSetupForOMS.yaml.bak ./helm-charts/dataSetupForOMS.yaml
+	mv ./helm-charts/ibm-oms-ent-prod/values.yaml.bak ./helm-charts/ibm-oms-ent-prod/values.yaml
+	mv ./helm-charts/ibm-oms-ent-prod/config/multischema.xml.bak ./helm-charts/ibm-oms-ent-prod/config/multischema.xml
+	mv ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml.bak ./helm-charts/ibm-oms-ent-prod/config/MSserver.xml
+	mv ./helm-charts/ibm-oms-ent-prod/config/SSserver.xml.bak ./helm-charts/ibm-oms-ent-prod/config/SSserver.xml
+	mv ./helm-charts/ibm-oms-ent-prod/config/system_overrides.properties.bak ./helm-charts/ibm-oms-ent-prod/config/system_overrides.properties
+
+}
+
+function createPVC()
+{
+	cp ./helm-charts/createPVC.yaml ./helm-charts/createPVC.yaml.bak
+	sed -i -e "s/%RHOS_PROJ_NAME%/$RHOS_PROJ_NAME/g" ./helm-charts/createPVC.yaml
+	applyYaml "./helm-charts/createPVC.yaml"
+	mv ./helm-charts/createPVC.yaml.bak ./helm-charts/createPVC.yaml
+
+}
 
 function deployOMS()
 {
 	
-	echo $NAMESPACE
+#	echo $NAMESPACE
+
 	printf "\nValidating RHOS project. Please wait...\n"
 	#get needed values for deployment
 	if [ `oc get projects | grep $NAMESPACE | wc -l` -eq 0 ]; then
 		 printf "\nRHOS Namespace $NAMESPACE does not exist or is not accessible. Exiting OMS Deployment.\n"
 		 exit 1 # Code 1 - RHOS DOES NOT EXIST OR IS NOT ACCESSIBLE
 	fi
-	 	
+	
 	export RHOS_PROJ_NAME=$NAMESPACE
+
+	printf "\nCreating the PVC...\n"
+	createPVC
+	#Wait for PVC 
+	sleep 180s  
 
 	promptForInput "Please enter the WAS Liberty Console ADMIN password:" LIBERTY_ADMIN_PWORD
 	promptForInput "Please enter the WAS Liberty Console password:" LIBERTY_CONSOLE_PWORD
 	promptForInput "Please enter the DB2 password:" DB_PWORD
 
 	printf "\nGetting the default secret...\n"
-#	kubectl -n default get secret default-us-icr-io -o yaml | sed "s/default/$RHOS_PROJ_NAME/g" | kubectl -n $RHOS_PROJ_NAME create -f -
+	kubectl -n default get secret default-us-icr-io -o yaml | sed "s/default/$RHOS_PROJ_NAME/g" | kubectl -n $RHOS_PROJ_NAME create -f -
 	printf "\nApplying OMS Secret yaml...\n"
 	setApplyOMSSecret
 
@@ -234,15 +299,20 @@ function deployOMS()
 	promptForInput "Please enter the DB2 username:" DB_UNAME
 	promptForInput "Please enter the DB2 pod name:" DB_PODNAME
  	promptForInput "Please enter the DB2 port:" DB_PORT
+	promptForInput "Please enter the DB2 port:" DB_PROJECT
 	promptForInput "Please enter the DB2 Service hostname: " DB_SVC_HOSTNAME
 
 	printf "\nCreating load balancer for DB access...\n "	
-	setApplyDB2LB
-
+#	setApplyDB2LB
 	createDBSchema
+	
+	instantiateOMSImage
+	createOMSDataSetup
+	resetFiles
+
+	
 
 
-#	helm install --name $RHOS_PROJ_NAME -f ./ibm-oms-ent-prod/values.yaml ./ibm-oms-ent-prod --timeout 3600 --namespace $RHOS_PROJ_NAME --tiller-namespace tiller
 }
 function createPrereqs()
 {
@@ -279,6 +349,9 @@ function promptForInput
 
 BUILDSUFFIX=01
 SECRETNAME=mq-secret
+
+printf "\n*** NOTICE *** Please ensure you are logged into RHOS BEFORE running this script *** NOTICE ***\n\n"
+read -n 1 -s -r -p "Press any key to continue or CTRL-C to exit now"
 
 
 if [ "$#" -lt 1 ]; then
