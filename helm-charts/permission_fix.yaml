@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: permission-fix
+  labels:
+    app: permission-fix
+spec:
+  containers:
+    - name: alpine
+      image: alpine:latest
+      securityContext:
+         privileged: false
+         runAsUser: 0
+         readOnlyRootFilesystem: false
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+      command: ["/bin/sh", "-c"]
+      args:
+      - 'tail -f /dev/null'
+      volumeMounts:
+      - name: oms-common
+        mountPath: "/shared"
+  volumes:
+    - name: oms-common
+      persistentVolumeClaim:
+         claimName: oms-dev-ibm-oms-ent-prod-oms-common
